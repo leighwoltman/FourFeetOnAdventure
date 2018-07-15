@@ -188,6 +188,8 @@ function getDirectories (srcpath) {
     postContent += "  </div>";
   }
 
+  indexContentB = indexContentB.replace("<!--jsonPics-->", JSON.stringify(gallery));
+
   indexContent = commonHeaderHtml + indexContent + postContent + indexContentB + commonFooterHtml;
 
   fs.writeFileSync(path.join(__dirname, "docs", "index.html"), indexContent, 'utf8');
