@@ -134,9 +134,9 @@ function getDirectories (srcpath) {
       modifiedPostTemplate = modifiedPostTemplate.replace("<!--bannerImage-->", post.BannerImage);
       modifiedPostTemplate = modifiedPostTemplate.replace("<!--author-->", "FourFeetOnAdventure");
       modifiedPostTemplate = modifiedPostTemplate.replace("<!--content-->", post.Content);
-      modifiedPostTemplate = modifiedPostTemplate.replace("<!--day-->", moment(post.Timestamp * 1000).format("D"));
-      modifiedPostTemplate = modifiedPostTemplate.replace("<!--month-->", moment(post.Timestamp * 1000).format("MMM"));
-      modifiedPostTemplate = modifiedPostTemplate.replace("<!--year-->", moment(post.Timestamp * 1000).format("YYYY"));
+      modifiedPostTemplate = modifiedPostTemplate.replace("<!--day-->", moment(post.Timestamp * 1000).utc().format("D"));
+      modifiedPostTemplate = modifiedPostTemplate.replace("<!--month-->", moment(post.Timestamp * 1000).utc().format("MMM"));
+      modifiedPostTemplate = modifiedPostTemplate.replace("<!--year-->", moment(post.Timestamp * 1000).utc().format("YYYY"));
 
       // need to make the dates work
 
@@ -176,9 +176,9 @@ function getDirectories (srcpath) {
     postContent += "        <div class='portfolio-content'>";
     postContent += "          <div class='portfolio-title'>";
     postContent += "            <div class='blog-post-date'>";
-    postContent += "              <span>" + moment(post.Timestamp * 1000).format("D") + "</span>";
-    postContent += "              <span>" + moment(post.Timestamp * 1000).format("MMM") + "</span>";
-    postContent += "              <span>" + moment(post.Timestamp * 1000).format("YYYY") + "</span>";
+    postContent += "              <span>" + moment(post.Timestamp * 1000).utc().format("D") + "</span>";
+    postContent += "              <span>" + moment(post.Timestamp * 1000).utc().format("MMM") + "</span>";
+    postContent += "              <span>" + moment(post.Timestamp * 1000).utc().format("YYYY") + "</span>";
     postContent += "            </div>";
     postContent += "          </div>";
     postContent += "          <h2><a href='" + post.URL + "'>" + post.Title + "</a></h2>";
