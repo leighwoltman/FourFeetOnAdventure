@@ -169,23 +169,23 @@ function getDirectories (srcpath) {
       post.SquareImage = post.SquareImage.substr(1);
     }
 
-    postContent += "  <div class='col-md-4 col-sm-6 col-xs-12'>";
-    postContent += "    <div class='portfolio-container'>";
-    postContent += "      <div class='portfolio-image'>";
-    postContent += "        <img src='" + post.SquareImage + "' class='img-responsive'/>";
-    postContent += "        <div class='portfolio-content'>";
-    postContent += "          <div class='portfolio-title'>";
-    postContent += "            <div class='blog-post-date'>";
-    postContent += "              <span>" + moment(post.Timestamp * 1000).utc().format("D") + "</span>";
-    postContent += "              <span>" + moment(post.Timestamp * 1000).utc().format("MMM") + "</span>";
-    postContent += "              <span>" + moment(post.Timestamp * 1000).utc().format("YYYY") + "</span>";
-    postContent += "            </div>";
-    postContent += "          </div>";
-    postContent += "          <h2><a href='" + post.URL + "'>" + post.Title + "</a></h2>";
-    postContent += "        </div>";
-    postContent += "      </div>";
-    postContent += "    </div>";
-    postContent += "  </div>";
+    postContent += "  <div class='col-md-4 col-sm-6 col-xs-12'>\n";
+    postContent += "    <div class='portfolio-container'>\n";
+    postContent += "      <div class='portfolio-image'>\n";
+    postContent += "        <img src='" + post.SquareImage + "' class='img-responsive'/>\n";
+    postContent += "        <div class='portfolio-content'>\n";
+    postContent += "          <div class='portfolio-title'>\n";
+    postContent += "            <div class='blog-post-date'>\n";
+    postContent += "              <span>" + moment(post.Timestamp * 1000).utc().format("D") + "</span>\n";
+    postContent += "              <span>" + moment(post.Timestamp * 1000).utc().format("MMM") + "</span>\n";
+    postContent += "              <span>" + moment(post.Timestamp * 1000).utc().format("YYYY") + "</span>\n";
+    postContent += "            </div>\n";
+    postContent += "          </div>\n";
+    postContent += "          <h2><a href='" + post.URL + "'>" + post.Title + "</a></h2>\n";
+    postContent += "        </div>\n";
+    postContent += "      </div>\n";
+    postContent += "    </div>\n";
+    postContent += "  </div>\n";
   }
 
   indexContentB = indexContentB.replace("<!--jsonPics-->", JSON.stringify(gallery));
