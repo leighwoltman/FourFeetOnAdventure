@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path');
 const sizeOf = require('image-size');
 const moment = require('moment');
+const sharp = require('sharp');
 
 
 // read the common-header and common footer
@@ -78,10 +79,12 @@ function getDirectories (srcpath) {
       while ((match = re1.exec(output[i].Content)) != null) {
           blogPics.push(match[1]);
       }
+      output[i].Pictures = [];
   
       let popped = blogPics.pop();
       while(popped) {
           pictures.push(popped);
+          output[i].Pictures.push(popped);
           popped = blogPics.pop();
       }
   }
@@ -165,8 +168,45 @@ function getDirectories (srcpath) {
   for(let i = 0; i < posts.length; i++) {
     let post = posts[i];
 
-    if(post.SquareImage[0] == "/" ) {
-      post.SquareImage = post.SquareImage.substr(1);
+    if(post.hasOwnProperty('SquareImage')) {
+      // if the URL starts with a leading slash remove it
+      if(post.SquareImage[0] == "/" ) {
+        post.SquareImage = post.SquareImage.substr(1);
+      }
+    } else {
+      // we need to make our own square image
+      if(post.Pictures.length > 0) {
+        post.SquareImage = post.Pictures[0];
+      } else {
+        throw new Error("No square image found and no picutres available");
+      }
+    }
+
+    // now, let's see if the image name already ends in 350, otherwise we will
+    // create a picture of the right size
+    
+    let locationOfSlash = post.SquareImage.indexOf("/") + 1;
+    let locationOfExtension = post.SquareImage.indexOf(".", locationOfSlash);
+
+    let fileNamePortion = post.SquareImage.substr(locationOfSlash, locationOfExtension - locationOfSlash);
+
+    if(!fileNamePortion.endsWith("_350")){
+      // then we want to create it
+      // open this image
+      let fullImage = path.join("docs", "img", fileNamePortion + ".jpg");
+      let smallSquareImage = path.join("docs", "img", fileNamePortion + "_350.jpg");
+      if(fs.existsSync(fullImage)) {
+        sharp(fullImage)
+          .resize(350, 350)
+          .toFile(smallSquareImage, (err, info) => {
+            if(err) {
+              console.log("Sharp Resize Error: " + err);
+            }
+          });
+        post.SquareImage = smallSquareImage.toString();
+      } else {
+        throw new Error("Square image does not exist");
+      }
     }
 
     postContent += "  <div class='col-md-4 col-sm-6 col-xs-12'>\n";
