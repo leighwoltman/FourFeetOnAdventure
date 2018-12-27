@@ -223,7 +223,7 @@ function getDirectories (srcpath) {
               console.log("Sharp Resize Error: " + err);
             }
           });
-        post.SquareImage = smallSquareImage.toString();
+        post.SquareImage = "img/" + fileNamePortion + "_350.jpg";
       } else {
         throw new Error("Square image does not exist");
       }
