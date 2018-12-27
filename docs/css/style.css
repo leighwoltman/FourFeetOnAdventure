@@ -145,7 +145,8 @@ a:hover{
 	border-bottom: 3px double #ddd;
 }
 
-.first-paragraph{
+
+.blog-content p strong{
 	display: block;
 	float: left;
 	margin: 10px 10px 5px 0;
@@ -877,8 +878,12 @@ a.bg-secondary:hover{
 	color: #999;
 }
 
-.img-blog-single{
+.blog-content p img{
 	margin-bottom: 20px;
+	display: block;
+    width: 100% \9;
+    max-width: 100%;
+    height: auto;
 }
 
 /* blog post tags */
