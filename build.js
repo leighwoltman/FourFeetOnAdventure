@@ -130,8 +130,28 @@ function getDirectories (srcpath) {
 
       modifiedPostTemplate = modifiedPostTemplate.replace("<!--title-->", post.Title);
 
-      if(post.BannerImage[0] == "/" ) {
-        post.BannerImage = post.BannerImage.substr(1);
+      if(post.hasOwnProperty('BannerImage')) {
+        // we may need to strip off the starting slash
+        if(post.BannerImage[0] == "/" ) {
+          post.BannerImage = post.BannerImage.substr(1);
+        }
+      } else {
+        if(post.Pictures.length > 0) {
+          // otherwise take the last image in the pictures array
+          post.BannerImage = post.Pictures[post.Pictures.length - 1];
+        } else {
+          throw new Exception("Must be at least one picture for a banner image");
+        }
+      }
+
+      // if there isn't a URL field, create one
+      if(!post.hasOwnProperty("URL")) {
+        let URL = "";
+        URL += post.Title;
+        URL = URL.toLowerCase();
+        URL = URL.replace(" ", "_");
+
+        post.URL = URL;
       }
 
       modifiedPostTemplate = modifiedPostTemplate.replace("<!--bannerImage-->", post.BannerImage);
@@ -233,3 +253,5 @@ function getDirectories (srcpath) {
   indexContent = commonHeaderHtml + indexContent + postContent + indexContentB + commonFooterHtml;
 
   fs.writeFileSync(path.join(__dirname, "docs", "index.html"), indexContent, 'utf8');
+
+  console.log("Build Complete");
