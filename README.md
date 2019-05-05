@@ -48,7 +48,7 @@
 
     b. The first character of the first paragraph should be put in <strong></strong> tags.
 
-    c. All images should be in the format: <p><img src="img/PICTURE.jpg"/></p>
+    c. All images should be in the format: ```<p><img src="img/PICTURE.jpg"/></p>```
 
 6. Check in these changes to GitHub.
 
