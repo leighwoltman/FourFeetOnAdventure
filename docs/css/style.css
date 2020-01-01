@@ -878,7 +878,8 @@ a.bg-secondary:hover{
 	color: #999;
 }
 
-.blog-content p img{
+.blog-content p img,
+.blog-content p video {
 	margin-bottom: 20px;
 	display: block;
     width: 100% \9;
