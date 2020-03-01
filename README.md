@@ -2,23 +2,17 @@
 
 ## Prerequisites: 
 
-1. Node.js installed
+1.0 Clone the project on the computer. This example uses vs code.
 
-1.1 If not installed go to nodejs.org and download the current LTS (long term support version).
+1.0.1 Download vs code. 
 
-1.2 Clone the project on the computer. This example uses vs code.
+1.0.2 Download git. git-scm.com.
 
-1.2.1 Download vs code. 
+1.0.3 Open vs code.
 
-1.2.2 Download git. git-scm.com.
-
-1.2.3 Open vs code.
-
-1.2.4 Clone repository: View menu ->  Command Palette -> ```git clone``` -> https://github.com/leighwoltman/FourFeetOnAdventure
+1.0.4 Clone repository: View menu ->  Command Palette -> ```git clone``` -> https://github.com/leighwoltman/FourFeetOnAdventure
 
 2. Open the project. File -> Open folder -> select cloned repository, folder nam should be FourFeetOnAdventure
-
-3. Open terminal window: View -> Terminal  Type: ```npm install```
 
 ## To create a new post
 
@@ -52,4 +46,4 @@
 
 6. Check in these changes to GitHub.
 
-7. Open terminal window: View -> Terminal  Type:  ```npm run build```. Check in the resulting changes to GitHub.
+7. The publish process is automatic (GitHub Actions)
