@@ -28,9 +28,9 @@
 
 8. Put the content into the `content.html`:
 
-    a. All text paragraphs and images should be encased in HTML paragraph tags, ie: <p>Your paragraph</p>
+    a. All text paragraphs and images should be encased in HTML paragraph tags, ie: ```<p>Your paragraph</p>```
 
-    b. The first character of the first paragraph should be put in <strong>Your character</strong> tags.
+    b. The first character of the first paragraph should be put in ```<strong>Your character</strong>``` tags.
 
     c. All images should be in the format: ```<p><img src="img/PICTURE.jpg"/></p>```
     
