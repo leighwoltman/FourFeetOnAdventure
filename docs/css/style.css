@@ -743,11 +743,6 @@ a.bg-secondary:hover{
 	position: relative;
 	max-width: 100%;
 	max-height: auto;
-	-webkit-transform: translateY(-30%);
-	   -moz-transform: translateY(-30%);
-		-ms-transform: translateY(-30%);
-		 -o-transform: translateY(-30%);
-			transform: translateY(-30%);
 }
 
 .blog-single-author img{
