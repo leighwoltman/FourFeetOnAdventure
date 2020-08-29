@@ -85,7 +85,6 @@ a:hover{
 	width: 100%;
 	margin-bottom: 0px;
 	padding-bottom: 8px;
-	border-bottom: 1px solid #efefef;
 	text-align: center;
 }
 
@@ -101,7 +100,7 @@ a:hover{
 	content: '';
 	position: absolute;
 	left: 0;
-	bottom: -16px;
+	bottom: -6px;
 	width: 100%;
 	background-color: #37bc9b;
 	height: 2px;
