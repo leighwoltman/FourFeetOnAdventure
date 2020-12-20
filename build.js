@@ -104,7 +104,7 @@ for(let i = 0; i < output.length; i++) {
     }
     // look through the html for pictures
     let blogPics = [];
-    let re1 = /<img[^\<]*src=[\"|']([a-zA-Z0-9_\/\.]{1,25})+[\"|'][^\<]*>/mg
+    let re1 = /<img[^\<]*src=[\"|']([a-zA-Z0-9_\-\/\.]{1,25})+[\"|'][^\<]*>/mg
     while ((match = re1.exec(output[i].Content)) != null) {
         // convert and copy 
         let localPathToImage = match[1];
@@ -236,7 +236,7 @@ for(let i = 0; i < posts.length; i++) {
     if(post.Pictures.length > 0) {
       post.SquareImage = post.Pictures[0];
     } else {
-      throw new Error("No square image found and no picutres available");
+      throw new Error("No square image found and no picutres available: " + post.Title);
     }
   }
 
