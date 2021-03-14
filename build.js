@@ -321,6 +321,7 @@ for(let i = 0; i < posts.length; i++) {
 
       emailTemplateHtml = emailTemplateHtml.replace("<!--PostURL-->", "https://fourfeetonadventure.com/" + post.URL)
       emailTemplateHtml = emailTemplateHtml.replace("<!--PostTitle-->", post.Title);
+      emailTemplateHtml = emailTemplateHtml.replace("<!--PostAltText-->", post.Title);
       emailTemplateHtml = emailTemplateHtml.replace("<!--PostBanner-->", "https://fourfeetonadventure.com/" + post.BannerImage);
       emailTemplateHtml = emailTemplateHtml.replace("<!--PostImage-->", "https://fourfeetonadventure.com/" + post.SquareImage);
       emailTemplateHtml = emailTemplateHtml.replace("<!--PostContent-->", shortDesc);
