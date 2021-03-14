@@ -289,14 +289,15 @@ for(let i = 0; i < posts.length; i++) {
 
     // create the extra headers
 
-    let headers = "<meta property='og:title' content='" + post.Title + "' />\n";
-    headers += "<meta name='twitter:title' content='" + post.Title + "' />\n";
+    let headers = "<meta property='og:title' content='" + post.Title.replace("'", "&#39;") + "' />\n";
+    headers += "<meta name='twitter:title' content='" + post.Title.replace("'", "&#39;") + "' />\n";
     headers += "<meta property='og:image' content='https://fourfeetonadventure.com/" + post.SquareImage + "'/>\n";
     headers += "<meta name='twitter:image' content='https://fourfeetonadventure.com/" + post.SquareImage + "'/>\n";
 
     var shortDesc = striptags(post.Content).substr(0,200);
     shortDesc = shortDesc.replace("\n", "");
     shortDesc = shortDesc.replace("\r", "");
+    shortDesc = shortDesc.replace("'", "&#39;");
     var lastSpace = shortDesc.lastIndexOf(" ");
     shortDesc = shortDesc.substr(0, lastSpace) + "...";
 
