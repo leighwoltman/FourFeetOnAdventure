@@ -313,6 +313,19 @@ for(let i = 0; i < posts.length; i++) {
     outputPost = outputPost.replace("<!--extraheaders-->", headers);
 
     fs.writeFileSync(path.join(__dirname,"docs", post.URL + ".html"), outputPost, 'utf8');
+
+    if(i == 0) {
+      // last one, make a newsletter
+      var emailTemplateHtml = fs.readFileSync(path.join(__dirname,'source','email.html'), 'utf8');
+
+      emailTemplateHtml = emailTemplateHtml.replace("<!--PostURL-->", "https://fourfeetonadventure.com/" + post.URL)
+      emailTemplateHtml = emailTemplateHtml.replace("<!--PostTitle-->", post.Title);
+      emailTemplateHtml = emailTemplateHtml.replace("<!--PostBanner-->", "https://fourfeetonadventure.com/" + post.BannerImage);
+      emailTemplateHtml = emailTemplateHtml.replace("<!--PostImage-->", "https://fourfeetonadventure.com/" + post.SquareImage);
+      emailTemplateHtml = emailTemplateHtml.replace("<!--PostContent-->", shortDesc);
+
+      fs.writeFileSync(path.join(__dirname,"docs", "email1.html"), emailTemplateHtml, 'utf8');
+    }
 }
 
 console.log("Build Complete");
