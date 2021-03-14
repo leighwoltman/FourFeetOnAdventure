@@ -3,6 +3,7 @@ const path = require('path');
 const sizeOf = require('image-size');
 const moment = require('moment');
 const sharp = require('sharp');
+const striptags = require('striptags');
 
 
 // read the common-header and common footer
@@ -142,70 +143,6 @@ for(let i = 0; i < pictures.length; i++) {
 let posts = output;
 let gallery = sized;
 
-var postTemplateHtml = fs.readFileSync(path.join(__dirname,'source','post.html'), 'utf8');
-
-// we want to output a page for each blog entry
-for(let i = 0; i < posts.length; i++) {
-  let post = posts[i];
-    // a post consists of 
-    //   {
-    //     "Title": "Bozeman to Cedar City",
-    //     "Timestamp": 1476662400,
-    //     "URL": "update_1",
-    //     "BannerImage": "/img/DSC00067_1100.jpg",
-    //     "SquareImage": "/img/DSC00221_350.jpg",
-    //     "Content": ..html...
-    //     "Path": .. original path ...
-    //   }
-
-    let outputPost = commonHeaderHtml;
-
-    let modifiedPostTemplate = postTemplateHtml;
-
-    modifiedPostTemplate = modifiedPostTemplate.replace("<!--title-->", post.Title);
-
-    if(post.hasOwnProperty('BannerImage')) {
-      // we may need to strip off the starting slash
-      if(post.BannerImage[0] == "/" ) {
-        post.BannerImage = post.BannerImage.substr(1);
-      }
-      let afterCopyPathToImage = convertAndCopyImage(post.BannerImage, post.URL, post.Path);
-      post.BannerImage = afterCopyPathToImage;
-    } else {
-      if(post.Pictures.length > 0) {
-        // otherwise take the last image in the pictures array
-        post.BannerImage = post.Pictures[post.Pictures.length - 1];
-      } else {
-        throw new Exception("Must be at least one picture for a banner image");
-      }
-    }
-
-    // if there isn't a URL field, create one
-    if(!post.hasOwnProperty("URL")) {
-      let URL = "";
-      URL += post.Title;
-      URL = URL.toLowerCase();
-      URL = URL.replace(" ", "_");
-
-      post.URL = URL;
-    }
-
-    modifiedPostTemplate = modifiedPostTemplate.replace("<!--bannerImage-->", post.BannerImage);
-    modifiedPostTemplate = modifiedPostTemplate.replace("<!--author-->", "FourFeetOnAdventure");
-    modifiedPostTemplate = modifiedPostTemplate.replace("<!--content-->", post.Content);
-    modifiedPostTemplate = modifiedPostTemplate.replace("<!--day-->", moment(post.Timestamp * 1000).utc().format("D"));
-    modifiedPostTemplate = modifiedPostTemplate.replace("<!--month-->", moment(post.Timestamp * 1000).utc().format("MMM"));
-    modifiedPostTemplate = modifiedPostTemplate.replace("<!--year-->", moment(post.Timestamp * 1000).utc().format("YYYY"));
-
-    // need to make the dates work
-
-    // and output this file
-    outputPost += modifiedPostTemplate;
-    outputPost += commonFooterHtml;
-
-    fs.writeFileSync(path.join(__dirname,"docs", post.URL + ".html"), outputPost, 'utf8');
-}
-
 // now create the index page
 var indexContentA = fs.readFileSync(path.join(__dirname,'source','index_partA.html'), 'utf8');
 var indexContentB = fs.readFileSync(path.join(__dirname,'source','index_partB.html'), 'utf8');
@@ -292,5 +229,90 @@ indexContentB = indexContentB.replace("<!--jsonPics-->", JSON.stringify(gallery)
 indexContent = commonHeaderHtml + indexContent + postContent + indexContentB + commonFooterHtml;
 
 fs.writeFileSync(path.join(__dirname, "docs", "index.html"), indexContent, 'utf8');
+
+var postTemplateHtml = fs.readFileSync(path.join(__dirname,'source','post.html'), 'utf8');
+
+// we want to output a page for each blog entry
+for(let i = 0; i < posts.length; i++) {
+  let post = posts[i];
+    // a post consists of 
+    //   {
+    //     "Title": "Bozeman to Cedar City",
+    //     "Timestamp": 1476662400,
+    //     "URL": "update_1",
+    //     "BannerImage": "/img/DSC00067_1100.jpg",
+    //     "SquareImage": "/img/DSC00221_350.jpg",
+    //     "Content": ..html...
+    //     "Path": .. original path ...
+    //   }
+
+    let outputPost = commonHeaderHtml;
+
+    let modifiedPostTemplate = postTemplateHtml;
+
+    modifiedPostTemplate = modifiedPostTemplate.replace("<!--title-->", post.Title);
+
+    if(post.hasOwnProperty('BannerImage')) {
+      // we may need to strip off the starting slash
+      if(post.BannerImage[0] == "/" ) {
+        post.BannerImage = post.BannerImage.substr(1);
+      }
+      let afterCopyPathToImage = convertAndCopyImage(post.BannerImage, post.URL, post.Path);
+      post.BannerImage = afterCopyPathToImage;
+    } else {
+      if(post.Pictures.length > 0) {
+        // otherwise take the last image in the pictures array
+        post.BannerImage = post.Pictures[post.Pictures.length - 1];
+      } else {
+        throw new Exception("Must be at least one picture for a banner image");
+      }
+    }
+
+    // if there isn't a URL field, create one
+    if(!post.hasOwnProperty("URL")) {
+      let URL = "";
+      URL += post.Title;
+      URL = URL.toLowerCase();
+      URL = URL.replace(" ", "_");
+
+      post.URL = URL;
+    }
+
+    modifiedPostTemplate = modifiedPostTemplate.replace("<!--bannerImage-->", post.BannerImage);
+    modifiedPostTemplate = modifiedPostTemplate.replace("<!--author-->", "FourFeetOnAdventure");
+    modifiedPostTemplate = modifiedPostTemplate.replace("<!--content-->", post.Content);
+    modifiedPostTemplate = modifiedPostTemplate.replace("<!--day-->", moment(post.Timestamp * 1000).utc().format("D"));
+    modifiedPostTemplate = modifiedPostTemplate.replace("<!--month-->", moment(post.Timestamp * 1000).utc().format("MMM"));
+    modifiedPostTemplate = modifiedPostTemplate.replace("<!--year-->", moment(post.Timestamp * 1000).utc().format("YYYY"));
+
+    // need to make the dates work
+
+    // create the extra headers
+
+    let headers = "<meta property='og:title' content='" + post.Title + "' />\n";
+    headers += "<meta name='twitter:title' content='" + post.Title + "' />\n";
+    headers += "<meta property='og:image' content='https://fourfeetonadventure.com/" + post.SquareImage + "'/>\n";
+    headers += "<meta name='twitter:image' content='https://fourfeetonadventure.com/" + post.SquareImage + "'/>\n";
+
+    var shortDesc = striptags(post.Content).substr(0,200);
+    shortDesc = shortDesc.replace("\n", "");
+    shortDesc = shortDesc.replace("\r", "");
+    var lastSpace = shortDesc.lastIndexOf(" ");
+    shortDesc = shortDesc.substr(0, lastSpace) + "...";
+
+    headers += "<meta property='og:description' content='" + shortDesc + "' />\n";
+    headers += "<meta name='twitter:description' content='" + shortDesc + "'/>\n";
+    headers += "<meta property='og:url' content='https://fourfeetonadventure.com/" + post.URL + "' />\n";
+    headers += "<meta property='og:type' content='website' />\n";
+    headers += "<meta name='twitter:card' content='summary_large_image'></meta>\n";
+
+    // and output this file
+    outputPost += modifiedPostTemplate;
+    outputPost += commonFooterHtml;
+
+    outputPost = outputPost.replace("<!--extraheaders-->", headers);
+
+    fs.writeFileSync(path.join(__dirname,"docs", post.URL + ".html"), outputPost, 'utf8');
+}
 
 console.log("Build Complete");
