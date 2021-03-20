@@ -2,9 +2,9 @@ $(document).ready(function(){
 
   $('#subscribeHeaderButton').click( function(e) {
     e.preventDefault();
-    $('#exampleInputEmail1').focus();
+    $('#mce-EMAIL').focus();
     $('html, body').stop().animate({
-        scrollTop: $('#exampleInputEmail1').offset().top
+        scrollTop: $('#mce-EMAIL').offset().top
     }, 1500, 'easeInOutExpo');
   });
 
@@ -64,38 +64,77 @@ $(document).ready(function(){
       keyboard: false
     });
 
-    var parameters = {};
-    parameters.email = $('#exampleInputEmail1').val();
+    var url = "https://fourfeetonadventure.us15.list-manage.com/subscribe/post-json?u=1765957e255101268dbcd1ec7&id=5ca3c9e575&c=jQuery1900787574161397572_1615745050944&EMAIL=" + encodeURIComponent($('#exampleInputEmail1').val()) + "&b_1765957e255101268dbcd1ec7_5ca3c9e575=&subscribe=Subscribe&_=" + Date.now();
+    
+    // get to:
+    // https://fourfeetonadventure.us15.list-manage.com/subscribe/post-json?u=1765957e255101268dbcd1ec7&id=5ca3c9e575&c=jQuery1900787574161397572_1615745050944&EMAIL=test2%40test.com&b_1765957e255101268dbcd1ec7_5ca3c9e575=&subscribe=Subscribe&_=1615745050946
+    //
+    // jQuery1900787574161397572_1615745050944({"result":"error","msg":"test2@test.com is already subscribed to list FourFeetOnAdventure. <a href=\"https:\/\/fourfeetonadventure.us15.list-manage.com\/subscribe\/send-email?e=dGVzdDJAdGVzdC5jb20%3D&u=1765957e255101268dbcd1ec7&id=5ca3c9e575\">Click here to update your profile<\/a>"})
+    // or 
+    // jQuery1900787574161397572_1615745050944({"result":"success","msg":"Thank you for subscribing!"})
 
-    // start the ajax request to the server
     $.ajax({
-          url: 'subscribe',
-          type: 'POST',
-          data: parameters,
-          dataType: 'json',
-          success: function(data)
-          {
-            // check the data
-            // was it a success
-            if(data.error)
-            {
-              $("#myModal .modal-title").html("Error Subscribing");
-              $("#myModal .modal-body").html("<p>We have an error: " + data.message + "</p><p>Please try again</p>");
-              $("#modalCloseButton").show();
-            }
-            else
-            {
-              $("#myModal .modal-title").html("Subscribed");
-              $("#myModal .modal-body").html("<p>Thanks for subscribing!</p>");
-              $("#modalCloseButton").show();
-            }
-          },
-          error: function()
-          {
-            $("#myModal .modal-body").html("<p>An error occured subscribing your email. Please try again later.");
-            $("#modalCloseButton").show();
-          }
-        });
+      type: 'POST',
+      url: 'https://fourfeetonadventure.us15.list-manage.com/subscribe/post-json?u=1765957e255101268dbcd1ec7&id=5ca3c9e575&c=?',
+      data: $('#mc-embedded-subscribe-form').serialize(),
+      cache: false,
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      error: (error) => {
+        $("#myModal .modal-body").html("<p>An error occured subscribing your email. Please try again later.");
+        $("#modalCloseButton").show();
+      },
+      success: (data) => {
+        // check the data
+        // was it a success
+        if(data.result == "error")
+        {
+          $("#myModal .modal-title").html("Error Subscribing");
+          $("#myModal .modal-body").html("<p>" + data.msg + "</p>");
+          $("#modalCloseButton").show();
+        }
+        else
+        {
+          $("#myModal .modal-title").html("Subscribed");
+          $("#myModal .modal-body").html("<p>" + data.msg + "</p>");
+          $("#modalCloseButton").show();
+        }
+      }
+    });
+
+    // // start the ajax request to the server
+    // $.ajax({
+    //       url: url,
+    //       type: 'GET',
+    //       dataType: 'json',
+    //       headers: {
+    //         "referer": "https://us15.admin.mailchimp.com/",
+    //         "sec-fetch-dest": "script",
+    //         "sec-fetch-mode": "no-cors"
+    //       },
+    //       success: function(data)
+    //       {
+    //         // check the data
+    //         // was it a success
+    //         if(data.result == "error")
+    //         {
+    //           $("#myModal .modal-title").html("Error Subscribing");
+    //           $("#myModal .modal-body").html("<p>" + data.msg + "</p>");
+    //           $("#modalCloseButton").show();
+    //         }
+    //         else
+    //         {
+    //           $("#myModal .modal-title").html("Subscribed");
+    //           $("#myModal .modal-body").html("<p>" + data.msg + "</p>");
+    //           $("#modalCloseButton").show();
+    //         }
+    //       },
+    //       error: function()
+    //       {
+    //         $("#myModal .modal-body").html("<p>An error occured subscribing your email. Please try again later.");
+    //         $("#modalCloseButton").show();
+    //       }
+    //     });
   });
 
   // /* backstretch slider */
