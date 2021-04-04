@@ -12,7 +12,7 @@
 
 2. On the other tab, create a new branch. The branch name should have a reference to which post or posts are being created. If you are creating one post name the branch the same as the post folder naming. Once in the branch, navigate to ```/posts``` and click to create a new file.
 
-3. Create the name of the file, so it has a folder name as per the post folder naming and a file name of `data.json`. Copy the content from a file in your example tab. The fields are as follows within `data.json`:
+3. Create the name of the file, so it has a folder name as per the post folder naming and a file name of `data.json` by putting a / after the folder naming and write `data.json`. Go in your example `data.json` and copy the content from a file in your example tab. The fields are as follows within `data.json`:
 
     a. Update the *Title* field.
 
