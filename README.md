@@ -51,3 +51,5 @@
 12. Add a reviewer, and then 'Create pull request'
 
 13. When the pull request is merged to master, it will automatically be deployed with GitHub actions.
+
+Note: Currently using https://video.online-convert.com/convert-to-webm with bitrate of 10000 for video encoding.
