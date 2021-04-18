@@ -301,6 +301,9 @@ for(let i = 0; i < posts.length; i++) {
     var lastSpace = shortDesc.lastIndexOf(" ");
     shortDesc = shortDesc.substr(0, lastSpace) + "...";
 
+    // save this for later
+    post.ShortDesc = shortDesc;
+
     headers += "<meta property='og:description' content='" + shortDesc + "' />\n";
     headers += "<meta name='twitter:description' content='" + shortDesc + "'/>\n";
     headers += "<meta property='og:url' content='https://fourfeetonadventure.com/" + post.URL + "' />\n";
@@ -314,20 +317,60 @@ for(let i = 0; i < posts.length; i++) {
     outputPost = outputPost.replace("<!--extraheaders-->", headers);
 
     fs.writeFileSync(path.join(__dirname,"docs", post.URL + ".html"), outputPost, 'utf8');
-
-    if(i == 0) {
-      // last one, make a newsletter
-      var emailTemplateHtml = fs.readFileSync(path.join(__dirname,'source','email.html'), 'utf8');
-
-      emailTemplateHtml = emailTemplateHtml.replace("<!--PostURL-->", "https://fourfeetonadventure.com/" + post.URL)
-      emailTemplateHtml = emailTemplateHtml.replace("<!--PostTitle-->", post.Title);
-      emailTemplateHtml = emailTemplateHtml.replace("<!--PostAltText-->", post.Title);
-      emailTemplateHtml = emailTemplateHtml.replace("<!--PostBanner-->", "https://fourfeetonadventure.com/" + post.BannerImage);
-      emailTemplateHtml = emailTemplateHtml.replace("<!--PostImage-->", "https://fourfeetonadventure.com/" + post.SquareImage);
-      emailTemplateHtml = emailTemplateHtml.replace("<!--PostContent-->", shortDesc);
-
-      fs.writeFileSync(path.join(__dirname,"docs", "email1.html"), emailTemplateHtml, 'utf8');
-    }
 }
+
+
+
+// make a newsletter
+var post = posts[0];
+var post2 = posts[1];
+var post3 = posts[2];
+var emailTemplateHtml = fs.readFileSync(path.join(__dirname,'source','email.html'), 'utf8');
+var emailTemplateHtml2 = fs.readFileSync(path.join(__dirname,'source','email2.html'), 'utf8');
+var emailTemplateHtml3 = fs.readFileSync(path.join(__dirname,'source','email3.html'), 'utf8');
+
+emailTemplateHtml = emailTemplateHtml.replace("<!--PostURL-->", "https://fourfeetonadventure.com/" + post.URL)
+emailTemplateHtml = emailTemplateHtml.replace("<!--PostTitle-->", post.Title);
+emailTemplateHtml = emailTemplateHtml.replace("<!--PostAltText-->", post.Title);
+emailTemplateHtml = emailTemplateHtml.replace("<!--PostBanner-->", "https://fourfeetonadventure.com/" + post.BannerImage);
+emailTemplateHtml = emailTemplateHtml.replace("<!--PostImage-->", "https://fourfeetonadventure.com/" + post.SquareImage);
+emailTemplateHtml = emailTemplateHtml.replace("<!--PostContent-->", post.ShortDesc);
+
+emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostURL-->", "https://fourfeetonadventure.com/" + post.URL)
+emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostTitle-->", post.Title);
+emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostAltText-->", post.Title);
+emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostBanner-->", "https://fourfeetonadventure.com/" + post.BannerImage);
+emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostImage-->", "https://fourfeetonadventure.com/" + post.SquareImage);
+emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostContent-->", post.ShortDesc);
+
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostURL-->", "https://fourfeetonadventure.com/" + post.URL)
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostTitle-->", post.Title);
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostAltText-->", post.Title);
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostBanner-->", "https://fourfeetonadventure.com/" + post.BannerImage);
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostImage-->", "https://fourfeetonadventure.com/" + post.SquareImage);
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostContent-->", post.ShortDesc);
+
+emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostURL2-->", "https://fourfeetonadventure.com/" + post2.URL)
+emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostTitle2-->", post2.Title);
+emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostAltText2-->", post2.Title);
+emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostImage2-->", "https://fourfeetonadventure.com/" + post2.SquareImage);
+emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostContent2-->", post2.ShortDesc);
+
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostURL2-->", "https://fourfeetonadventure.com/" + post2.URL)
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostTitle2-->", post2.Title);
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostAltText2-->", post2.Title);
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostImage2-->", "https://fourfeetonadventure.com/" + post2.SquareImage);
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostContent2-->", post2.ShortDesc);
+
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostURL3-->", "https://fourfeetonadventure.com/" + post3.URL)
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostTitle3-->", post3.Title);
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostAltText3-->", post3.Title);
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostImage3-->", "https://fourfeetonadventure.com/" + post3.SquareImage);
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostContent3-->", post3.ShortDesc);
+
+
+fs.writeFileSync(path.join(__dirname,"docs", "email1.html"), emailTemplateHtml, 'utf8');
+fs.writeFileSync(path.join(__dirname,"docs", "email2.html"), emailTemplateHtml2, 'utf8');
+fs.writeFileSync(path.join(__dirname,"docs", "email3.html"), emailTemplateHtml3, 'utf8');
 
 console.log("Build Complete");
