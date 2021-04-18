@@ -97,7 +97,7 @@ for(let i = 0; i < output.length; i++) {
     // make the URL lowercase
     output[i].URL = output[i].URL.toLowerCase();
     // look through the html for movies, copy their paths
-    let revideo = /<source[^\<]*src=[\"|']([a-zA-Z0-9_\/\.]{1,25})+[\"|'][^\<]*>/mg
+    let revideo = /<source[^\<]*src=[\"|']([a-zA-Z0-9_\-\/\.]{1,25})+[\"|'][^\<]*>/mg
     while ((match = revideo.exec(output[i].Content)) != null) {
       let localPathToImage = match[1];
       let afterCopyPathToImage = convertAndCopyImage(localPathToImage, output[i].URL, output[i].Path);
