@@ -369,8 +369,9 @@ emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostImage3-->", "https://fo
 emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostContent3-->", post3.ShortDesc);
 
 
-fs.writeFileSync(path.join(__dirname,"docs", "email1.html"), emailTemplateHtml, 'utf8');
-fs.writeFileSync(path.join(__dirname,"docs", "email2.html"), emailTemplateHtml2, 'utf8');
+// temporarily write the '2' posts email to the email1.html
+//fs.writeFileSync(path.join(__dirname,"docs", "email1.html"), emailTemplateHtml, 'utf8');
+fs.writeFileSync(path.join(__dirname,"docs", "email1.html"), emailTemplateHtml2, 'utf8');
 fs.writeFileSync(path.join(__dirname,"docs", "email3.html"), emailTemplateHtml3, 'utf8');
 
 console.log("Build Complete");
