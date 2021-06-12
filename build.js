@@ -193,7 +193,7 @@ for(let i = 0; i < posts.length; i++) {
     let smallSquareImage = path.join("docs", newRelativeFilePath);
     if(fs.existsSync(fullImage)) {
       // see if _350 image has already been created, if so, don't need to do it again
-      if(!fs.existsSync(smallSquareImage)) {
+      if(!fs.existsSync(smallSquareImage) || fs.statSync(smallSquareImage).size < 5) {
         sharp(fullImage)
           .resize(350, 350)
           .toFile(smallSquareImage, (err, info) => {
