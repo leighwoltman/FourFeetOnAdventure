@@ -192,13 +192,16 @@ for(let i = 0; i < posts.length; i++) {
     let newRelativeFilePath = post.SquareImage.replace(fileNamePortion, fileNamePortion + "_350");
     let smallSquareImage = path.join("docs", newRelativeFilePath);
     if(fs.existsSync(fullImage)) {
-      sharp(fullImage)
-        .resize(350, 350)
-        .toFile(smallSquareImage, (err, info) => {
-          if(err) {
-            console.log("Sharp Resize Error: " + err);
-          }
-        });
+      // see if _350 image has already been created, if so, don't need to do it again
+      if(!fs.existsSync(smallSquareImage)) {
+        sharp(fullImage)
+          .resize(350, 350)
+          .toFile(smallSquareImage, (err, info) => {
+            if(err) {
+              console.log("Sharp Resize Error: " + err);
+            }
+          });
+      }
       post.SquareImage = newRelativeFilePath;
     } else {
       throw new Error("Square image does not exist");
