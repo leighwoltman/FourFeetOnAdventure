@@ -53,3 +53,5 @@
 13. When the pull request is merged to master, it will automatically be deployed with GitHub actions.
 
 Note: Currently using https://video.online-convert.com/convert-to-webm with bitrate of 10000 for video encoding.
+
+Note: To change the number of posts in the email template, open `build.js` and change the variable `postsToEmail`
