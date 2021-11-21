@@ -371,10 +371,22 @@ emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostAltText3-->", post3.Tit
 emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostImage3-->", "https://fourfeetonadventure.com/" + post3.SquareImage);
 emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostContent3-->", post3.ShortDesc);
 
+// decide which email gets written out to 'email1.html' (our only free template)
+let postsToEmail = 2;
 
-// temporarily write the '2' posts email to the email1.html
-//fs.writeFileSync(path.join(__dirname,"docs", "email1.html"), emailTemplateHtml, 'utf8');
-fs.writeFileSync(path.join(__dirname,"docs", "email1.html"), emailTemplateHtml2, 'utf8');
-fs.writeFileSync(path.join(__dirname,"docs", "email3.html"), emailTemplateHtml3, 'utf8');
+let emailContent = emailTemplateHtml;
+switch(postsToEmail) {
+  default:
+    emailContent = emailTemplateHtml;
+    break;
+  case 2:
+    emailContent = emailTemplateHtml2;
+    break;
+  case 3:
+    emailContent = emailTemplateHtml3;
+    break;
+}
+
+fs.writeFileSync(path.join(__dirname,"docs", "email1.html"), emailContent, 'utf8');
 
 console.log("Build Complete");
