@@ -171,6 +171,12 @@ blockquote{
 	line-height: 30px;
 }
 
+figcaption {
+	color: #37bc9b;
+	font-style: italic;
+	margin-top: -21px;
+}
+
 .marg-20-top{
 	margin-top: 20px;
 }
