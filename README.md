@@ -41,8 +41,10 @@
     b. The first character of the first paragraph should be put in ```<strong>Your character</strong>``` tags. ie: ```<p><strong>I</strong>t started ...</p>```
 
     c. All images should be in the format: ```<p><img src="img/PICTURE.jpg"/></p>```
+
+    d. All images with a caption should be: ```<p><img src="img/PICTURE.jpg"/><figcaption>Caption</figcaption></p>```
     
-    d. All videos should be in the format: ```<p><video autoplay loop muted><source src="img/VIDEO.webm" type="video/webm"/></video></p>```
+    e. All videos should be in the format: ```<p><video autoplay loop muted><source src="img/VIDEO.webm" type="video/webm"/></video></p>```
 
 10. Once complete, commit it to the new branch you are working on.
 
