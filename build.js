@@ -372,7 +372,7 @@ emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostImage3-->", "https://fo
 emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostContent3-->", post3.ShortDesc);
 
 // decide which email gets written out to 'email1.html' (our only free template)
-let postsToEmail = 1;
+let postsToEmail = 2;
 
 let emailContent = emailTemplateHtml;
 switch(postsToEmail) {
