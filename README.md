@@ -42,7 +42,7 @@
 
     c. All images should be in the format: ```<p><img src="img/PICTURE.jpg"/></p>```
 
-    d. All images with a caption should be: ```<p><img src="img/PICTURE.jpg"/><figcaption>Caption</figcaption></p>```
+    d. All images with a caption should be: ```<p><img src="img/PICTURE.jpg"/><figcaption>Caption Text</figcaption></p>```
     
     e. All videos should be in the format: ```<p><video autoplay loop muted><source src="img/VIDEO.webm" type="video/webm"/></video></p>```
 
