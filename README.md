@@ -23,18 +23,20 @@
     d. [Optional] Make a *BannerImage* field, this should be a path to an image relative to this file. Only start the path in the img directory, ie: the picture as "img/PICTURE.jpg"
 
     e. [Optional] Make a *SquareImage* field, this should be a path to an image relative to this file. Only start the path in the img directory, ie: the picture as "img/PICTURE.jpg"
+
+    f. [Optional] Make a *Sections* field, which is a JSON array of strings. The strings should be the names of the sections, include "Main" if you also want the post to show up in the home page listing. An example of the field is ```"Sections": ["Main", "Paddling"]```
     
-4. After filling out the content, head to to bottom and type a title for the commit, it should be short and descriptive. We can just use the default option. Make sure you are committing to the branch you just created.
+5. After filling out the content, head to to bottom and type a title for the commit, it should be short and descriptive. We can just use the default option. Make sure you are committing to the branch you just created.
 
-5. Then navigate into your new directory under ```/posts```
+6. Then navigate into your new directory under ```/posts```
 
-6. Upload pictures in this directory, by convention in a subdirectory named ```img```. GitHub allows uploading all pictures at once, if you place all the photos in a folder named ```img``` and drop the whole folder in the 'Upload files` dialog, and GitHub will make the same folder structure, ie: create the ```img``` directory.
+7. Upload pictures in this directory, by convention in a subdirectory named ```img```. GitHub allows uploading all pictures at once, if you place all the photos in a folder named ```img``` and drop the whole folder in the 'Upload files` dialog, and GitHub will make the same folder structure, ie: create the ```img``` directory.
 
-7. Update any references to pictures in ```data.json```
+8. Update any references to pictures in ```data.json```
 
-8. Navigate back into the new post directory under ```/posts```
+9. Navigate back into the new post directory under ```/posts```
 
-9. Create a new file here, called `content.html` and put the text as follows:
+10. Create a new file here, called `content.html` and put the text as follows:
 
     a. All text paragraphs and images should be encased in HTML paragraph tags, ie: ```<p>Your paragraph</p>```
 
@@ -46,13 +48,13 @@
     
     e. All videos should be in the format: ```<p><video autoplay loop muted><source src="img/VIDEO.webm" type="video/webm"/></video></p>```
 
-10. Once complete, commit it to the new branch you are working on.
+11. Once complete, commit it to the new branch you are working on.
 
-11. Navigate back to 'Code' tab, and then to the 'N Branches' list. Beside the branch you created, click 'New pull request'
+12. Navigate back to 'Code' tab, and then to the 'N Branches' list. Beside the branch you created, click 'New pull request'
 
-12. Add a reviewer, and then 'Create pull request'
+13. Add a reviewer, and then 'Create pull request'
 
-13. When the pull request is merged to master, it will automatically be deployed with GitHub actions.
+14. When the pull request is merged to master, it will automatically be deployed with GitHub actions.
 
 Note: Currently using https://video.online-convert.com/convert-to-webm with bitrate of 10000 for video encoding.
 
