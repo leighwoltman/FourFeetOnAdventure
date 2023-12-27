@@ -54,7 +54,7 @@ function convertAndCopyImage(imagePathRelativeToPost, postUrl, postPath) {
   // copy this file to the output directory
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.copyFileSync(sourcePath, outputPath);
-  let imagePathAfterCopy = "img/" + postUrl + "/" + imagePathRelativeToPost;
+  let imagePathAfterCopy = `img/${postUrl}/${imagePathRelativeToPost}`;
   return imagePathAfterCopy;
 }
 
@@ -136,7 +136,7 @@ for(let i = 0; i < pictures.length; i++) {
         sized.push(obj);
     }
     catch(e) {
-        console.log("Couldn't find: " + img);
+        console.log(`Couldn't find: ${img}`);
     }
 }
 
@@ -173,7 +173,7 @@ for(let i = 0; i < posts.length; i++) {
     if(post.Pictures.length > 0) {
       post.SquareImage = post.Pictures[0];
     } else {
-      throw new Error("No square image found and no picutres available: " + post.Title);
+      throw new Error(`No square image found and no picutres available: ${post.Title}`);
     }
   }
 
@@ -189,7 +189,7 @@ for(let i = 0; i < posts.length; i++) {
     // then we want to create it
     // open this image
     let fullImage = path.join("docs", post.SquareImage);
-    let newRelativeFilePath = post.SquareImage.replace(fileNamePortion, fileNamePortion + "_350");
+    let newRelativeFilePath = post.SquareImage.replace(fileNamePortion, `${fileNamePortion}_350`);
     let smallSquareImage = path.join("docs", newRelativeFilePath);
     if(fs.existsSync(fullImage)) {
       // see if _350 image has already been created, if so, don't need to do it again
@@ -198,7 +198,7 @@ for(let i = 0; i < posts.length; i++) {
           .resize(350, 350)
           .toFile(smallSquareImage, (err, info) => {
             if(err) {
-              console.log("Sharp Resize Error: " + err);
+              console.log(`Sharp Resize Error: ${err}`);
             }
           });
       }
@@ -208,23 +208,23 @@ for(let i = 0; i < posts.length; i++) {
     }
   }
 
-  postContent += "  <div class='col-md-4 col-sm-6 col-xs-12'>\n";
-  postContent += "    <div class='portfolio-container'>\n";
-  postContent += "      <div class='portfolio-image'>\n";
-  postContent += "        <img src='" + post.SquareImage + "' class='img-responsive'/>\n";
-  postContent += "        <div class='portfolio-content'>\n";
-  postContent += "          <div class='portfolio-title'>\n";
-  postContent += "            <div class='blog-post-date'>\n";
-  postContent += "              <span>" + moment(post.Timestamp * 1000).utc().format("D") + "</span>\n";
-  postContent += "              <span>" + moment(post.Timestamp * 1000).utc().format("MMM") + "</span>\n";
-  postContent += "              <span>" + moment(post.Timestamp * 1000).utc().format("YYYY") + "</span>\n";
-  postContent += "            </div>\n";
-  postContent += "          </div>\n";
-  postContent += "          <h2><a href='" + post.URL + "'>" + post.Title + "</a></h2>\n";
-  postContent += "        </div>\n";
-  postContent += "      </div>\n";
-  postContent += "    </div>\n";
-  postContent += "  </div>\n";
+  postContent += `  <div class='col-md-4 col-sm-6 col-xs-12'>\n`;
+  postContent += `    <div class='portfolio-container'>\n`;
+  postContent += `      <div class='portfolio-image'>\n`;
+  postContent += `        <img src='${post.SquareImage}' class='img-responsive'/>\n`;
+  postContent += `        <div class='portfolio-content'>\n`;
+  postContent += `          <div class='portfolio-title'>\n`;
+  postContent += `            <div class='blog-post-date'>\n`;
+  postContent += `              <span>${moment(post.Timestamp * 1000).utc().format("D")}</span>\n`;
+  postContent += `              <span>${moment(post.Timestamp * 1000).utc().format("MMM")}</span>\n`;
+  postContent += `              <span>${moment(post.Timestamp * 1000).utc().format("YYYY")}</span>\n`;
+  postContent += `            </div>\n`;
+  postContent += `          </div>\n`;
+  postContent += `          <h2><a href='${post.URL}'>${post.Title}</a></h2>\n`;
+  postContent += `        </div>\n`;
+  postContent += `      </div>\n`;
+  postContent += `    </div>\n`;
+  postContent += `  </div>\n`;
 }
 
 indexContentB = indexContentB.replace("<!--jsonPics-->", JSON.stringify(gallery));
@@ -292,10 +292,10 @@ for(let i = 0; i < posts.length; i++) {
 
     // create the extra headers
 
-    let headers = "<meta property='og:title' content='" + post.Title.replace("'", "&#39;") + "' />\n";
-    headers += "<meta name='twitter:title' content='" + post.Title.replace("'", "&#39;") + "' />\n";
-    headers += "<meta property='og:image' content='https://fourfeetonadventure.com/" + post.SquareImage + "'/>\n";
-    headers += "<meta name='twitter:image' content='https://fourfeetonadventure.com/" + post.SquareImage + "'/>\n";
+    let headers = `<meta property='og:title' content='${post.Title.replace("'", "&#39;")}' />\n`;
+    headers += `<meta name='twitter:title' content='${post.Title.replace("'", "&#39;")}' />\n`;
+    headers += `<meta property='og:image' content='https://fourfeetonadventure.com/${post.SquareImage}'/>\n`;
+    headers += `<meta name='twitter:image' content='https://fourfeetonadventure.com/${post.SquareImage}'/>\n`;
 
     var shortDesc = striptags(post.Content).substr(0,200);
     shortDesc = shortDesc.replace("\n", "");
@@ -307,11 +307,11 @@ for(let i = 0; i < posts.length; i++) {
     // save this for later
     post.ShortDesc = shortDesc;
 
-    headers += "<meta property='og:description' content='" + shortDesc + "' />\n";
-    headers += "<meta name='twitter:description' content='" + shortDesc + "'/>\n";
-    headers += "<meta property='og:url' content='https://fourfeetonadventure.com/" + post.URL + "' />\n";
-    headers += "<meta property='og:type' content='website' />\n";
-    headers += "<meta name='twitter:card' content='summary_large_image'></meta>\n";
+    headers += `<meta property='og:description' content='${shortDesc}' />\n`;
+    headers += `<meta name='twitter:description' content='${shortDesc}'/>\n`;
+    headers += `<meta property='og:url' content='https://fourfeetonadventure.com/${post.URL}' />\n`;
+    headers += `<meta property='og:type' content='website' />\n`;
+    headers += `<meta name='twitter:card' content='summary_large_image'></meta>\n`;
 
     // and output this file
     outputPost += modifiedPostTemplate;
@@ -332,43 +332,43 @@ var emailTemplateHtml = fs.readFileSync(path.join(__dirname,'source','email.html
 var emailTemplateHtml2 = fs.readFileSync(path.join(__dirname,'source','email2.html'), 'utf8');
 var emailTemplateHtml3 = fs.readFileSync(path.join(__dirname,'source','email3.html'), 'utf8');
 
-emailTemplateHtml = emailTemplateHtml.replace("<!--PostURL-->", "https://fourfeetonadventure.com/" + post.URL)
+emailTemplateHtml = emailTemplateHtml.replace("<!--PostURL-->", `https://fourfeetonadventure.com/${post.URL}`);
 emailTemplateHtml = emailTemplateHtml.replace("<!--PostTitle-->", post.Title);
 emailTemplateHtml = emailTemplateHtml.replace("<!--PostAltText-->", post.Title);
-emailTemplateHtml = emailTemplateHtml.replace("<!--PostBanner-->", "https://fourfeetonadventure.com/" + post.BannerImage);
-emailTemplateHtml = emailTemplateHtml.replace("<!--PostImage-->", "https://fourfeetonadventure.com/" + post.SquareImage);
+emailTemplateHtml = emailTemplateHtml.replace("<!--PostBanner-->", `https://fourfeetonadventure.com/${post.BannerImage}`);
+emailTemplateHtml = emailTemplateHtml.replace("<!--PostImage-->", `https://fourfeetonadventure.com/${post.SquareImage}`);
 emailTemplateHtml = emailTemplateHtml.replace("<!--PostContent-->", post.ShortDesc);
 
-emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostURL-->", "https://fourfeetonadventure.com/" + post.URL)
+emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostURL-->", `https://fourfeetonadventure.com/${post.URL}`);
 emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostTitle-->", post.Title);
 emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostAltText-->", post.Title);
-emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostBanner-->", "https://fourfeetonadventure.com/" + post.BannerImage);
-emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostImage-->", "https://fourfeetonadventure.com/" + post.SquareImage);
+emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostBanner-->", `https://fourfeetonadventure.com/${post.BannerImage}`);
+emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostImage-->", `https://fourfeetonadventure.com/${post.SquareImage}`);
 emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostContent-->", post.ShortDesc);
 
-emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostURL-->", "https://fourfeetonadventure.com/" + post.URL)
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostURL-->", `https://fourfeetonadventure.com/${post.URL)
 emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostTitle-->", post.Title);
 emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostAltText-->", post.Title);
-emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostBanner-->", "https://fourfeetonadventure.com/" + post.BannerImage);
-emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostImage-->", "https://fourfeetonadventure.com/" + post.SquareImage);
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostBanner-->", `https://fourfeetonadventure.com/${post.BannerImage}`);
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostImage-->", `https://fourfeetonadventure.com/${post.SquareImage}`);
 emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostContent-->", post.ShortDesc);
 
-emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostURL2-->", "https://fourfeetonadventure.com/" + post2.URL)
+emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostURL2-->", `https://fourfeetonadventure.com/${post2.URL}`);
 emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostTitle2-->", post2.Title);
 emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostAltText2-->", post2.Title);
-emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostImage2-->", "https://fourfeetonadventure.com/" + post2.SquareImage);
+emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostImage2-->", `https://fourfeetonadventure.com/${post2.SquareImage}`);
 emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostContent2-->", post2.ShortDesc);
 
-emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostURL2-->", "https://fourfeetonadventure.com/" + post2.URL)
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostURL2-->", `https://fourfeetonadventure.com/${post2.URL}`);
 emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostTitle2-->", post2.Title);
 emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostAltText2-->", post2.Title);
-emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostImage2-->", "https://fourfeetonadventure.com/" + post2.SquareImage);
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostImage2-->", `https://fourfeetonadventure.com/${post2.SquareImage}`);
 emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostContent2-->", post2.ShortDesc);
 
-emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostURL3-->", "https://fourfeetonadventure.com/" + post3.URL)
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostURL3-->", `https://fourfeetonadventure.com/${post3.URL}`);
 emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostTitle3-->", post3.Title);
 emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostAltText3-->", post3.Title);
-emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostImage3-->", "https://fourfeetonadventure.com/" + post3.SquareImage);
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostImage3-->", `https://fourfeetonadventure.com/${post3.SquareImage}`);
 emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostContent3-->", post3.ShortDesc);
 
 // decide which email gets written out to 'email1.html' (our only free template)
