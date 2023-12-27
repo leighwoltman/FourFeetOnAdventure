@@ -4,9 +4,9 @@
   "description": "personal travel blog website",
   "main": "build.js",
   "dependencies": {
-    "image-size": "^0.6.3",
+    "image-size": "^1.0.2",
     "luxon": "^3.4.4",
-    "sharp": "^0.25.2",
+    "sharp": "^0.32.6",
     "striptags": "^3.2.0"
   },
   "devDependencies": {},

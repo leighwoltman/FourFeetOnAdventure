@@ -215,7 +215,7 @@ for(let i = 0; i < posts.length; i++) {
   postContent += `        <div class='portfolio-content'>\n`;
   postContent += `          <div class='portfolio-title'>\n`;
   postContent += `            <div class='blog-post-date'>\n`;
-  postContent += `              <span>${DateTime.fromSeconds(post.Timestamp).toFormat('dd')}</span>\n`;
+  postContent += `              <span>${DateTime.fromSeconds(post.Timestamp).toFormat('d')}</span>\n`;
   postContent += `              <span>${DateTime.fromSeconds(post.Timestamp).toFormat('LLL')}</span>\n`;
   postContent += `              <span>${DateTime.fromSeconds(post.Timestamp).toFormat('yyyy')}</span>\n`;
   postContent += `            </div>\n`;
@@ -284,7 +284,7 @@ for(let i = 0; i < posts.length; i++) {
     modifiedPostTemplate = modifiedPostTemplate.replace("<!--bannerImage-->", post.BannerImage);
     modifiedPostTemplate = modifiedPostTemplate.replace("<!--author-->", "FourFeetOnAdventure");
     modifiedPostTemplate = modifiedPostTemplate.replace("<!--content-->", post.Content);
-    modifiedPostTemplate = modifiedPostTemplate.replace("<!--day-->", DateTime.fromSeconds(post.Timestamp).toFormat('dd'));
+    modifiedPostTemplate = modifiedPostTemplate.replace("<!--day-->", DateTime.fromSeconds(post.Timestamp).toFormat('d'));
     modifiedPostTemplate = modifiedPostTemplate.replace("<!--month-->", DateTime.fromSeconds(post.Timestamp).toFormat('LLL'));
     modifiedPostTemplate = modifiedPostTemplate.replace("<!--year-->", DateTime.fromSeconds(post.Timestamp).toFormat('yyyy'));
 
