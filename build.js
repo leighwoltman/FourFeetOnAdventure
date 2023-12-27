@@ -10,13 +10,6 @@ const striptags = require('striptags');
 var commonHeaderHtml = fs.readFileSync(path.join(__dirname,'source','common-header.html'), 'utf8');
 var commonFooterHtml = fs.readFileSync(path.join(__dirname,'source','common-footer.html'), 'utf8');
 
-// create the about page
-var aboutContentHtml = fs.readFileSync(path.join(__dirname,'source','about.html'), 'utf8');
-
-// combine these together
-var completeAbout = commonHeaderHtml + aboutContentHtml + commonFooterHtml;
-fs.writeFileSync(path.join(__dirname,"docs","about.html"), completeAbout, 'utf8');
-
 // read the posts
 function getDirectories (srcpath) {
   return fs.readdirSync(srcpath)
@@ -58,16 +51,129 @@ function convertAndCopyImage(imagePathRelativeToPost, postUrl, postPath) {
   return imagePathAfterCopy;
 }
 
+function wordToUrl(word) {
+  const regex = /[^a-z0-9]+/gm;
+  const subst = `_`;
+  // The substituted value will be contained in the result variable
+  return word.toLowerCase().replace(regex, subst);
+}
+
+function generatePostListingForSection(sectionName, posts) {
+  let postContent = "";
+
+  for(let post of posts) {
+    if(post.Sections.includes(sectionName)) {
+      if(post.hasOwnProperty('SquareImage')) {
+        // if the URL starts with a leading slash remove it
+        if(post.SquareImage[0] == "/" ) {
+          post.SquareImage = post.SquareImage.substr(1);
+        }
+        let afterCopyPathToImage = convertAndCopyImage(post.SquareImage, post.URL, post.Path);
+        post.SquareImage = afterCopyPathToImage;
+      } else {
+        // we need to make our own square image
+        if(post.Pictures.length > 0) {
+          post.SquareImage = post.Pictures[0];
+        } else {
+          throw new Error(`No square image found and no picutres available: ${post.Title}`);
+        }
+      }
+
+      // now, let's see if the image name already ends in 350, otherwise we will
+      // create a picture of the right size
+      
+      let locationOfSlash = post.SquareImage.indexOf("/") + 1;
+      let locationOfExtension = post.SquareImage.indexOf(".", locationOfSlash);
+
+      let fileNamePortion = post.SquareImage.substr(locationOfSlash, locationOfExtension - locationOfSlash);
+
+      if(!fileNamePortion.endsWith("_350")){
+        // then we want to create it
+        // open this image
+        let fullImage = path.join("docs", post.SquareImage);
+        let newRelativeFilePath = post.SquareImage.replace(fileNamePortion, `${fileNamePortion}_350`);
+        let smallSquareImage = path.join("docs", newRelativeFilePath);
+        if(fs.existsSync(fullImage)) {
+          // see if _350 image has already been created, if so, don't need to do it again
+          if(!fs.existsSync(smallSquareImage) || fs.statSync(smallSquareImage).size < 5) {
+            sharp(fullImage)
+              .resize(350, 350)
+              .toFile(smallSquareImage, (err, info) => {
+                if(err) {
+                  console.log(`Sharp Resize Error: ${err}`);
+                }
+              });
+          }
+          post.SquareImage = newRelativeFilePath;
+        } else {
+          throw new Error("Square image does not exist");
+        }
+      }
+
+      postContent += `  <div class='col-md-4 col-sm-6 col-xs-12'>\n`;
+      postContent += `    <div class='portfolio-container'>\n`;
+      postContent += `      <div class='portfolio-image'>\n`;
+      postContent += `        <img src='${post.SquareImage}' class='img-responsive'/>\n`;
+      postContent += `        <div class='portfolio-content'>\n`;
+      postContent += `          <div class='portfolio-title'>\n`;
+      postContent += `            <div class='blog-post-date'>\n`;
+      postContent += `              <span>${DateTime.fromSeconds(post.Timestamp).toFormat('d')}</span>\n`;
+      postContent += `              <span>${DateTime.fromSeconds(post.Timestamp).toFormat('LLL')}</span>\n`;
+      postContent += `              <span>${DateTime.fromSeconds(post.Timestamp).toFormat('yyyy')}</span>\n`;
+      postContent += `            </div>\n`;
+      postContent += `          </div>\n`;
+      postContent += `          <h2><a href='${post.URL}'>${post.Title}</a></h2>\n`;
+      postContent += `        </div>\n`;
+      postContent += `      </div>\n`;
+      postContent += `    </div>\n`;
+      postContent += `  </div>\n`;
+    }
+  }
+
+  return postContent;
+}
+
+function createListingPage(sectionName, title, filename, posts, gallery) {
+  var indexContentA = fs.readFileSync(path.join(__dirname,'source','index_partA.html'), 'utf8');
+  var indexContentB = fs.readFileSync(path.join(__dirname,'source','index_partB.html'), 'utf8');
+
+  var indexContent = indexContentA;
+  if(gallery) {
+    indexContent = indexContent.replace("<!--image0-->", gallery[0].src);
+    indexContent = indexContent.replace("<!--image1-->", gallery[1].src);
+    indexContent = indexContent.replace("<!--image2-->", gallery[2].src);
+    indexContent = indexContent.replace("<!--image3-->", gallery[3].src);
+    indexContent = indexContent.replace("<!--image4-->", gallery[4].src);
+    indexContent = indexContent.replace("<!--image5-->", gallery[5].src);
+    indexContent = indexContent.replace("<!--imageCount-->", gallery.length);
+    indexContentB = indexContentB.replace("<!--jsonPics-->", JSON.stringify(gallery));
+  } else {
+    // remove the gallery from <!-- begin:slider --> to <!-- end:slider -->
+    let indexOfEndOfGallery = indexContent.indexOf("<!-- end:slider -->");
+    indexOfEndOfGallery += 20;
+    indexContent = indexContent.substring(indexOfEndOfGallery);
+    indexContentB = indexContentB.replace("<!--jsonPics-->", '[]');
+  }
+
+  let mainContent = generatePostListingForSection(sectionName, posts);
+
+  indexContent = indexContent.replace("<!--heading-->", title)
+
+  indexContent = commonHeaderHtml + indexContent + mainContent + indexContentB + commonFooterHtml;
+
+  fs.writeFileSync(path.join(__dirname, "docs", `${filename}.html`), indexContent, 'utf8');
+}
+
 var directories = getDirectories(path.join(__dirname, "posts"));
 
 directories.forEach(function(value, index, theArray) {
   theArray[index] = path.join(__dirname,"posts", value);
 });
 
-var output = [];
+var posts = [];
 var pictures = [];
 
-directories.forEach(function(value, index) {
+directories.forEach((value) => {
     var jsonFile = getFileByExtension(value, ".json");
     var htmlFile = getFileByExtension(value, ".html");
     
@@ -78,12 +184,12 @@ directories.forEach(function(value, index) {
         obj.Content = html;
         // push the path to this directory
         obj.Path = value;
-        output.push(obj);
+        posts.push(obj);
     }
 });
 
 // now sort the array based upon file timestamps
-output.sort(function(a, b){
+posts.sort(function(a, b){
     var keyA = a.Timestamp,
         keyB = b.Timestamp;
     // Compare the 2 dates
@@ -92,41 +198,66 @@ output.sort(function(a, b){
     return 0;
 });
 
+let uniqueSections = ['Main'];
+
 // go through each blog
-for(let i = 0; i < output.length; i++) {
+for(let post of posts) {
+    // check for any sections identified, if none is found, default to 'Main'
+    if(!post.hasOwnProperty('Sections') || !Array.isArray(post.Sections)) {
+      post.Sections = ['Main'];
+    }
+    
+    for(let section of post.Sections) {
+      if(!uniqueSections.includes(section)) {
+        uniqueSections.push(section);
+      }
+    }
+
     // make the URL lowercase
-    output[i].URL = output[i].URL.toLowerCase();
+    post.URL = post.URL.toLowerCase();
     // look through the html for movies, copy their paths
     let revideo = /<source[^\<]*src=[\"|']([a-zA-Z0-9_\-\/\.]{1,25})+[\"|'][^\<]*>/mg
-    while ((match = revideo.exec(output[i].Content)) != null) {
+    while ((match = revideo.exec(post.Content)) != null) {
       let localPathToImage = match[1];
-      let afterCopyPathToImage = convertAndCopyImage(localPathToImage, output[i].URL, output[i].Path);
-      output[i].Content = output[i].Content.replace(localPathToImage, afterCopyPathToImage);
+      let afterCopyPathToImage = convertAndCopyImage(localPathToImage, post.URL, post.Path);
+      post.Content = post.Content.replace(localPathToImage, afterCopyPathToImage);
     }
     // look through the html for pictures
     let blogPics = [];
     let re1 = /<img[^\<]*src=[\"|']([a-zA-Z0-9_\-\/\.]{1,25})+[\"|'][^\<]*>/mg
-    while ((match = re1.exec(output[i].Content)) != null) {
+    while ((match = re1.exec(post.Content)) != null) {
         // convert and copy 
         let localPathToImage = match[1];
-        let afterCopyPathToImage = convertAndCopyImage(localPathToImage, output[i].URL, output[i].Path);
-        output[i].Content = output[i].Content.replace(localPathToImage, afterCopyPathToImage);
+        let afterCopyPathToImage = convertAndCopyImage(localPathToImage, post.URL, post.Path);
+        post.Content = post.Content.replace(localPathToImage, afterCopyPathToImage);
         blogPics.push(afterCopyPathToImage);
     }
-    output[i].Pictures = [];
+    post.Pictures = [];
 
     let popped = blogPics.pop();
     while(popped) {
         pictures.push(popped);
-        output[i].Pictures.push(popped);
+        post.Pictures.push(popped);
         popped = blogPics.pop();
     }
 }
 
+// process the unique sections and turn them into links within the content header
+let headerDropDownContent = "";
+for(let section of uniqueSections) {
+  // main is always present so we skip it
+  if(section != 'Main') {
+    // convert word to URL
+    let sectionUrl = wordToUrl(section);
+    headerDropDownContent += `<li role="presentation"><a role="menuitem" tabindex="-1" href="${sectionUrl}">${section}</a></li>\n`
+  }
+}
+
+commonHeaderHtml = commonHeaderHtml.replace("<!--additionalSections-->", headerDropDownContent);
+
 let sized = []
 
-for(let i = 0; i < pictures.length; i++) {
-    let img = pictures[i];
+for(let img of pictures) {
     let obj = {};
     try {
         var dimensions = sizeOf(path.join(__dirname,'docs',img));
@@ -140,99 +271,21 @@ for(let i = 0; i < pictures.length; i++) {
     }
 }
 
-let posts = output;
 let gallery = sized;
 
 // now create the index page
-var indexContentA = fs.readFileSync(path.join(__dirname,'source','index_partA.html'), 'utf8');
-var indexContentB = fs.readFileSync(path.join(__dirname,'source','index_partB.html'), 'utf8');
+createListingPage("Main", "Posts", "index", posts, gallery);
 
-var indexContent = indexContentA;
-indexContent = indexContent.replace("<!--image0-->", gallery[0].src);
-indexContent = indexContent.replace("<!--image1-->", gallery[1].src);
-indexContent = indexContent.replace("<!--image2-->", gallery[2].src);
-indexContent = indexContent.replace("<!--image3-->", gallery[3].src);
-indexContent = indexContent.replace("<!--image4-->", gallery[4].src);
-indexContent = indexContent.replace("<!--image5-->", gallery[5].src);
-indexContent = indexContent.replace("<!--imageCount-->", gallery.length);
-
-let postContent = "";
-
-for(let i = 0; i < posts.length; i++) {
-  let post = posts[i];
-
-  if(post.hasOwnProperty('SquareImage')) {
-    // if the URL starts with a leading slash remove it
-    if(post.SquareImage[0] == "/" ) {
-      post.SquareImage = post.SquareImage.substr(1);
-    }
-    let afterCopyPathToImage = convertAndCopyImage(post.SquareImage, post.URL, post.Path);
-    post.SquareImage = afterCopyPathToImage;
-  } else {
-    // we need to make our own square image
-    if(post.Pictures.length > 0) {
-      post.SquareImage = post.Pictures[0];
-    } else {
-      throw new Error(`No square image found and no picutres available: ${post.Title}`);
-    }
+// create the listing page for each Section
+for(let section of uniqueSections) {
+  // main is always present so we skip it
+  if(section != 'Main') {
+    let sectionUrl = wordToUrl(section);
+    createListingPage(section, section, sectionUrl, posts);
   }
-
-  // now, let's see if the image name already ends in 350, otherwise we will
-  // create a picture of the right size
-  
-  let locationOfSlash = post.SquareImage.indexOf("/") + 1;
-  let locationOfExtension = post.SquareImage.indexOf(".", locationOfSlash);
-
-  let fileNamePortion = post.SquareImage.substr(locationOfSlash, locationOfExtension - locationOfSlash);
-
-  if(!fileNamePortion.endsWith("_350")){
-    // then we want to create it
-    // open this image
-    let fullImage = path.join("docs", post.SquareImage);
-    let newRelativeFilePath = post.SquareImage.replace(fileNamePortion, `${fileNamePortion}_350`);
-    let smallSquareImage = path.join("docs", newRelativeFilePath);
-    if(fs.existsSync(fullImage)) {
-      // see if _350 image has already been created, if so, don't need to do it again
-      if(!fs.existsSync(smallSquareImage) || fs.statSync(smallSquareImage).size < 5) {
-        sharp(fullImage)
-          .resize(350, 350)
-          .toFile(smallSquareImage, (err, info) => {
-            if(err) {
-              console.log(`Sharp Resize Error: ${err}`);
-            }
-          });
-      }
-      post.SquareImage = newRelativeFilePath;
-    } else {
-      throw new Error("Square image does not exist");
-    }
-  }
-
-  postContent += `  <div class='col-md-4 col-sm-6 col-xs-12'>\n`;
-  postContent += `    <div class='portfolio-container'>\n`;
-  postContent += `      <div class='portfolio-image'>\n`;
-  postContent += `        <img src='${post.SquareImage}' class='img-responsive'/>\n`;
-  postContent += `        <div class='portfolio-content'>\n`;
-  postContent += `          <div class='portfolio-title'>\n`;
-  postContent += `            <div class='blog-post-date'>\n`;
-  postContent += `              <span>${DateTime.fromSeconds(post.Timestamp).toFormat('d')}</span>\n`;
-  postContent += `              <span>${DateTime.fromSeconds(post.Timestamp).toFormat('LLL')}</span>\n`;
-  postContent += `              <span>${DateTime.fromSeconds(post.Timestamp).toFormat('yyyy')}</span>\n`;
-  postContent += `            </div>\n`;
-  postContent += `          </div>\n`;
-  postContent += `          <h2><a href='${post.URL}'>${post.Title}</a></h2>\n`;
-  postContent += `        </div>\n`;
-  postContent += `      </div>\n`;
-  postContent += `    </div>\n`;
-  postContent += `  </div>\n`;
 }
 
-indexContentB = indexContentB.replace("<!--jsonPics-->", JSON.stringify(gallery));
-
-indexContent = commonHeaderHtml + indexContent + postContent + indexContentB + commonFooterHtml;
-
-fs.writeFileSync(path.join(__dirname, "docs", "index.html"), indexContent, 'utf8');
-
+// create the pages for each individual blog
 var postTemplateHtml = fs.readFileSync(path.join(__dirname,'source','post.html'), 'utf8');
 
 // we want to output a page for each blog entry
@@ -322,7 +375,12 @@ for(let i = 0; i < posts.length; i++) {
     fs.writeFileSync(path.join(__dirname,"docs", post.URL + ".html"), outputPost, 'utf8');
 }
 
+// create the about page
+var aboutContentHtml = fs.readFileSync(path.join(__dirname,'source','about.html'), 'utf8');
 
+// combine these together
+var completeAbout = commonHeaderHtml + aboutContentHtml + commonFooterHtml;
+fs.writeFileSync(path.join(__dirname,"docs","about.html"), completeAbout, 'utf8');
 
 // make a newsletter
 var post = posts[0];

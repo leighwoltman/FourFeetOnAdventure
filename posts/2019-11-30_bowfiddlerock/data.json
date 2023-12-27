@@ -2,5 +2,6 @@
     "Title": "Bow Fiddle Rock",
     "Timestamp": 1575113734,
     "URL": "bowfiddlerock",
-    "BannerImage": "img/DSC03390.jpg"
+    "BannerImage": "img/DSC03390.jpg",
+    "Sections": ["Main", "Paddling"]
 }
