@@ -215,9 +215,9 @@ for(let i = 0; i < posts.length; i++) {
   postContent += `        <div class='portfolio-content'>\n`;
   postContent += `          <div class='portfolio-title'>\n`;
   postContent += `            <div class='blog-post-date'>\n`;
-  postContent += `              <span>${moment(post.Timestamp * 1000).utc().format("D")}</span>\n`;
-  postContent += `              <span>${moment(post.Timestamp * 1000).utc().format("MMM")}</span>\n`;
-  postContent += `              <span>${moment(post.Timestamp * 1000).utc().format("YYYY")}</span>\n`;
+  postContent += `              <span>${DateTime.fromSeconds(post.Timestamp).toFormat('dd')}</span>\n`;
+  postContent += `              <span>${DateTime.fromSeconds(post.Timestamp).toFormat('LLL')}</span>\n`;
+  postContent += `              <span>${DateTime.fromSeconds(post.Timestamp).toFormat('yyyy')}</span>\n`;
   postContent += `            </div>\n`;
   postContent += `          </div>\n`;
   postContent += `          <h2><a href='${post.URL}'>${post.Title}</a></h2>\n`;
@@ -284,9 +284,9 @@ for(let i = 0; i < posts.length; i++) {
     modifiedPostTemplate = modifiedPostTemplate.replace("<!--bannerImage-->", post.BannerImage);
     modifiedPostTemplate = modifiedPostTemplate.replace("<!--author-->", "FourFeetOnAdventure");
     modifiedPostTemplate = modifiedPostTemplate.replace("<!--content-->", post.Content);
-    modifiedPostTemplate = modifiedPostTemplate.replace("<!--day-->", moment(post.Timestamp * 1000).utc().format("D"));
-    modifiedPostTemplate = modifiedPostTemplate.replace("<!--month-->", moment(post.Timestamp * 1000).utc().format("MMM"));
-    modifiedPostTemplate = modifiedPostTemplate.replace("<!--year-->", moment(post.Timestamp * 1000).utc().format("YYYY"));
+    modifiedPostTemplate = modifiedPostTemplate.replace("<!--day-->", DateTime.fromSeconds(post.Timestamp).toFormat('dd'));
+    modifiedPostTemplate = modifiedPostTemplate.replace("<!--month-->", DateTime.fromSeconds(post.Timestamp).toFormat('LLL'));
+    modifiedPostTemplate = modifiedPostTemplate.replace("<!--year-->", DateTime.fromSeconds(post.Timestamp).toFormat('yyyy'));
 
     // need to make the dates work
 
