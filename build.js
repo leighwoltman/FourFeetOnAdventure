@@ -63,53 +63,6 @@ function generatePostListingForSection(sectionName, posts) {
 
   for(let post of posts) {
     if(post.Sections.includes(sectionName)) {
-      if(post.hasOwnProperty('SquareImage')) {
-        // if the URL starts with a leading slash remove it
-        if(post.SquareImage[0] == "/" ) {
-          post.SquareImage = post.SquareImage.substr(1);
-        }
-        let afterCopyPathToImage = convertAndCopyImage(post.SquareImage, post.URL, post.Path);
-        post.SquareImage = afterCopyPathToImage;
-      } else {
-        // we need to make our own square image
-        if(post.Pictures.length > 0) {
-          post.SquareImage = post.Pictures[0];
-        } else {
-          throw new Error(`No square image found and no picutres available: ${post.Title}`);
-        }
-      }
-
-      // now, let's see if the image name already ends in 350, otherwise we will
-      // create a picture of the right size
-      
-      let locationOfSlash = post.SquareImage.indexOf("/") + 1;
-      let locationOfExtension = post.SquareImage.indexOf(".", locationOfSlash);
-
-      let fileNamePortion = post.SquareImage.substr(locationOfSlash, locationOfExtension - locationOfSlash);
-
-      if(!fileNamePortion.endsWith("_350")){
-        // then we want to create it
-        // open this image
-        let fullImage = path.join("docs", post.SquareImage);
-        let newRelativeFilePath = post.SquareImage.replace(fileNamePortion, `${fileNamePortion}_350`);
-        let smallSquareImage = path.join("docs", newRelativeFilePath);
-        if(fs.existsSync(fullImage)) {
-          // see if _350 image has already been created, if so, don't need to do it again
-          if(!fs.existsSync(smallSquareImage) || fs.statSync(smallSquareImage).size < 5) {
-            sharp(fullImage)
-              .resize(350, 350)
-              .toFile(smallSquareImage, (err, info) => {
-                if(err) {
-                  console.log(`Sharp Resize Error: ${err}`);
-                }
-              });
-          }
-          post.SquareImage = newRelativeFilePath;
-        } else {
-          throw new Error("Square image does not exist");
-        }
-      }
-
       postContent += `  <div class='col-md-4 col-sm-6 col-xs-12'>\n`;
       postContent += `    <div class='portfolio-container'>\n`;
       postContent += `      <div class='portfolio-image'>\n`;
@@ -239,6 +192,53 @@ for(let post of posts) {
         pictures.push(popped);
         post.Pictures.push(popped);
         popped = blogPics.pop();
+    }
+
+    if(post.hasOwnProperty('SquareImage')) {
+      // if the URL starts with a leading slash remove it
+      if(post.SquareImage[0] == "/" ) {
+        post.SquareImage = post.SquareImage.substr(1);
+      }
+      let afterCopyPathToImage = convertAndCopyImage(post.SquareImage, post.URL, post.Path);
+      post.SquareImage = afterCopyPathToImage;
+    } else {
+      // we need to make our own square image
+      if(post.Pictures.length > 0) {
+        post.SquareImage = post.Pictures[0];
+      } else {
+        throw new Error(`No square image found and no picutres available: ${post.Title}`);
+      }
+    }
+
+    // now, let's see if the image name already ends in 350, otherwise we will
+    // create a picture of the right size
+    
+    let locationOfSlash = post.SquareImage.indexOf("/") + 1;
+    let locationOfExtension = post.SquareImage.indexOf(".", locationOfSlash);
+
+    let fileNamePortion = post.SquareImage.substr(locationOfSlash, locationOfExtension - locationOfSlash);
+
+    if(!fileNamePortion.endsWith("_350")){
+      // then we want to create it
+      // open this image
+      let fullImage = path.join("docs", post.SquareImage);
+      let newRelativeFilePath = post.SquareImage.replace(fileNamePortion, `${fileNamePortion}_350`);
+      let smallSquareImage = path.join("docs", newRelativeFilePath);
+      if(fs.existsSync(fullImage)) {
+        // see if _350 image has already been created, if so, don't need to do it again
+        if(!fs.existsSync(smallSquareImage) || fs.statSync(smallSquareImage).size < 5) {
+          sharp(fullImage)
+            .resize(350, 350)
+            .toFile(smallSquareImage, (err, info) => {
+              if(err) {
+                console.log(`Sharp Resize Error: ${err}`);
+              }
+            });
+        }
+        post.SquareImage = newRelativeFilePath;
+      } else {
+        throw new Error("Square image does not exist");
+      }
     }
 }
 
