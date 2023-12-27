@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path');
 const sizeOf = require('image-size');
-const moment = require('moment');
+const { DateTime } = require("luxon");
 const sharp = require('sharp');
 const striptags = require('striptags');
 
@@ -346,7 +346,7 @@ emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostBanner-->", `https://fo
 emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostImage-->", `https://fourfeetonadventure.com/${post.SquareImage}`);
 emailTemplateHtml2 = emailTemplateHtml2.replace("<!--PostContent-->", post.ShortDesc);
 
-emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostURL-->", `https://fourfeetonadventure.com/${post.URL)
+emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostURL-->", `https://fourfeetonadventure.com/${post.URL}`);
 emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostTitle-->", post.Title);
 emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostAltText-->", post.Title);
 emailTemplateHtml3 = emailTemplateHtml3.replace("<!--PostBanner-->", `https://fourfeetonadventure.com/${post.BannerImage}`);
