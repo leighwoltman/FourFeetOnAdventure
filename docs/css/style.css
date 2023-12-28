@@ -1652,6 +1652,11 @@ a.bg-secondary:hover{
 	[15. PAGINATION ]
 	============================
 */
+.pagination {
+	display: flex;
+    justify-content: space-between;
+}
+
 .pagination > li > a,
 .pagination > li > span {
 	color: #48cfad;
