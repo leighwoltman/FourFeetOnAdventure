@@ -124,7 +124,6 @@ directories.forEach(function(value, index, theArray) {
 });
 
 var posts = [];
-var pictures = [];
 
 directories.forEach((value) => {
     var jsonFile = getFileByExtension(value, ".json");
@@ -189,7 +188,6 @@ for(let post of posts) {
 
     let popped = blogPics.pop();
     while(popped) {
-        pictures.push(popped);
         post.Pictures.push(popped);
         popped = blogPics.pop();
     }
@@ -240,6 +238,30 @@ for(let post of posts) {
         throw new Error("Square image does not exist");
       }
     }
+
+    if(post.hasOwnProperty('BannerImage')) {
+      // we may need to strip off the starting slash
+      if(post.BannerImage[0] == "/" ) {
+        post.BannerImage = post.BannerImage.substr(1);
+      }
+      let afterCopyPathToImage = convertAndCopyImage(post.BannerImage, post.URL, post.Path);
+      post.BannerImage = afterCopyPathToImage;
+    } else {
+      if(post.Pictures.length > 0) {
+        // otherwise take the last image in the pictures array
+        post.BannerImage = post.Pictures[post.Pictures.length - 1];
+      } else {
+        throw new Exception("Must be at least one picture for a banner image");
+      }
+    }
+
+    // if there isn't a URL field, create one
+    if(!post.hasOwnProperty("URL")) {
+      let URL = "";
+      URL += post.Title;
+      URL = wordToUrl(URL);
+      post.URL = URL;
+    }
 }
 
 // process the unique sections and turn them into links within the content header
@@ -257,18 +279,23 @@ commonHeaderHtml = commonHeaderHtml.replace("<!--additionalSections-->", headerD
 
 let sized = []
 
-for(let img of pictures) {
+for(let post of posts) {
+  let imageIndex = post.Pictures.length;
+  for(let img of post.Pictures) {
     let obj = {};
     try {
         var dimensions = sizeOf(path.join(__dirname,'docs',img));
         obj.src = img;
         obj.h = dimensions.height;
         obj.w = dimensions.width;
+        obj.title = `${DateTime.fromSeconds(post.Timestamp).toFormat('LLL d, yyyy')} <a href='${post.URL}'>${post.Title}</a> - image ${imageIndex}/${post.Pictures.length}`;
         sized.push(obj);
     }
     catch(e) {
         console.log(`Couldn't find: ${img}`);
     }
+    imageIndex--;
+  }
 }
 
 let gallery = sized;
@@ -291,6 +318,8 @@ var postTemplateHtml = fs.readFileSync(path.join(__dirname,'source','post.html')
 // we want to output a page for each blog entry
 for(let i = 0; i < posts.length; i++) {
   let post = posts[i];
+  let nextPost = i > 0 ? posts[i-1] : null;
+  let previousPost = i < (posts.length-1) ? posts[i+1] : null;
     // a post consists of 
     //   {
     //     "Title": "Bozeman to Cedar City",
@@ -308,32 +337,6 @@ for(let i = 0; i < posts.length; i++) {
 
     modifiedPostTemplate = modifiedPostTemplate.replace("<!--title-->", post.Title);
 
-    if(post.hasOwnProperty('BannerImage')) {
-      // we may need to strip off the starting slash
-      if(post.BannerImage[0] == "/" ) {
-        post.BannerImage = post.BannerImage.substr(1);
-      }
-      let afterCopyPathToImage = convertAndCopyImage(post.BannerImage, post.URL, post.Path);
-      post.BannerImage = afterCopyPathToImage;
-    } else {
-      if(post.Pictures.length > 0) {
-        // otherwise take the last image in the pictures array
-        post.BannerImage = post.Pictures[post.Pictures.length - 1];
-      } else {
-        throw new Exception("Must be at least one picture for a banner image");
-      }
-    }
-
-    // if there isn't a URL field, create one
-    if(!post.hasOwnProperty("URL")) {
-      let URL = "";
-      URL += post.Title;
-      URL = URL.toLowerCase();
-      URL = URL.replace(" ", "_");
-
-      post.URL = URL;
-    }
-
     modifiedPostTemplate = modifiedPostTemplate.replace("<!--bannerImage-->", post.BannerImage);
     modifiedPostTemplate = modifiedPostTemplate.replace("<!--author-->", "FourFeetOnAdventure");
     modifiedPostTemplate = modifiedPostTemplate.replace("<!--content-->", post.Content);
@@ -341,10 +344,16 @@ for(let i = 0; i < posts.length; i++) {
     modifiedPostTemplate = modifiedPostTemplate.replace("<!--month-->", DateTime.fromSeconds(post.Timestamp).toFormat('LLL'));
     modifiedPostTemplate = modifiedPostTemplate.replace("<!--year-->", DateTime.fromSeconds(post.Timestamp).toFormat('yyyy'));
 
-    // need to make the dates work
+    let paginationButtons = "";
+    if(previousPost) {
+      paginationButtons += `<li><a href="${previousPost.URL}">Previous - ${previousPost.Title}</a></li>`;
+    }
+    if(nextPost) {
+      paginationButtons += `<li><a href="${nextPost.URL}">Next - ${nextPost.Title}</a></li>`;
+    }
+    modifiedPostTemplate = modifiedPostTemplate.replace("<!--paginationbuttons-->", paginationButtons);
 
     // create the extra headers
-
     let headers = `<meta property='og:title' content='${post.Title.replace("'", "&#39;")}' />\n`;
     headers += `<meta name='twitter:title' content='${post.Title.replace("'", "&#39;")}' />\n`;
     headers += `<meta property='og:image' content='https://fourfeetonadventure.com/${post.SquareImage}'/>\n`;
