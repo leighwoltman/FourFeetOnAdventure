@@ -48,6 +48,8 @@
     
     e. All videos should be in the format: ```<p><video autoplay loop muted><source src="img/VIDEO.webm" type="video/webm"/></video></p>```
 
+    f. A section can be defined as ```<blockquote><span class="heading-title"><h2>Title</h2></span><p>A</p></blockquote>```
+
 11. Once complete, commit it to the new branch you are working on.
 
 12. Navigate back to 'Code' tab, and then to the 'N Branches' list. Beside the branch you created, click 'New pull request'
