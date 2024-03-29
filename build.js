@@ -140,6 +140,13 @@ directories.forEach((value) => {
     }
 });
 
+// go through each blog
+for(let post of posts) {
+  if(typeof post.Timestamp === 'string') {
+    post.Timestamp = DateTime.fromISO(post.Timestamp).plus({hours: 12}).toSeconds();
+  }
+}
+
 // now sort the array based upon file timestamps
 posts.sort(function(a, b){
     var keyA = a.Timestamp,
